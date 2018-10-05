@@ -137,7 +137,7 @@ function dynamics_analysis
         
         Q(i,1) = body(i).Bi'*(body(i).Li - body(i).Ki*D_temp) + body(i).Ta + body(i).Td;
         
-        body(i).yp = Q(i,1) + body(i).Tg - body(i).r_hat;
+        body(i).yp = Q(i,1) - body(i).r_hat;
     end
     
     dYh = M\Q;

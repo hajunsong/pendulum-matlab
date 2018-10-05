@@ -61,8 +61,7 @@ while(t_current <= end_time)
     end
     fprintf(fp, '\n');
    
-    u_vec = [1;0;0];
-    body(1).r_hat = body(1).K*(Y_next(2*num_body + 1,1) - u_vec'*body(1).Jic*u_vec*0.5*body(1).dqi*body(1).dqi);
+    body(1).r_hat = body(1).K*(Y_next(2*num_body + 1,1));
     
 %     if t_current > t_inter && flag == 0
 %         body(1).des_pos = body(1).qi;
