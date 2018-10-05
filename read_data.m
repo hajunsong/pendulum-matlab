@@ -212,7 +212,7 @@ function read_data
     body6.K = 500;
     
     %% read_control
-    des_pos = 0*pi/180;
+    des_pos = pi/180;
     err_pos = 0;
     err_pos_accum = 0;
     err_pos_prev = 0;
@@ -229,113 +229,113 @@ function read_data
     Kp_vel = 100;
     Ki_vel = 0;
     Kd_vel = 0;
-%     
-%     body1.des_pos = 0*pi/180;
-%     body1.err_pos = 0;
-%     body1.err_pos_accum = 0;
-%     body1.err_pos_prev = 0;
-%     
-%     body1.Kp_pos = 30000;
-%     body1.Ki_pos = 0;
-%     body1.Kd_pos = 2;
-%     
-%     body1.des_vel = 0;
-%     body1.err_vel = 0;
-%     body1.err_vel_accum = 0;
-%     body1.err_vel_prev = 0;
-%     
-%     body1.Kp_vel = 100;
-%     body1.Ki_vel = 0;
-%     body1.Kd_vel = 0;
-%     
-%     body2.des_pos = 0*pi/180;
-%     body2.err_pos = 0;
-%     body2.err_pos_accum = 0;
-%     body2.err_pos_prev = 0;
-%     
-%     body2.Kp_pos = 30000;
-%     body2.Ki_pos = 0;
-%     body2.Kd_pos = 2;
-%     
-%     body2.des_vel = 0;
-%     body2.err_vel = 0;
-%     body2.err_vel_accum = 0;
-%     body2.err_vel_prev = 0;
-%     
-%     body2.Kp_vel = 100;
-%     body2.Ki_vel = 0;
-%     body2.Kd_vel = 0;
-%         
-%     body3.des_pos = 0*pi/180;
-%     body3.err_pos = 0;
-%     body3.err_pos_accum = 0;
-%     body3.err_pos_prev = 0;
-%     
-%     body3.Kp_pos = 30000;
-%     body3.Ki_pos = 0;
-%     body3.Kd_pos = 2;
-%     
-%     body3.des_vel = 0;
-%     body3.err_vel = 0;
-%     body3.err_vel_accum = 0;
-%     body3.err_vel_prev = 0;
-%     
-%     body3.Kp_vel = 100;
-%     body3.Ki_vel = 0;
-%     body3.Kd_vel = 0;
-%     
-%     body4.des_pos = 0*pi/180;
-%     body4.err_pos = 0;
-%     body4.err_pos_accum = 0;
-%     body4.err_pos_prev = 0;
-%     
-%     body4.Kp_pos = 30000;
-%     body4.Ki_pos = 0;
-%     body4.Kd_pos = 2;
-%     
-%     body4.des_vel = 0;
-%     body4.err_vel = 0;
-%     body4.err_vel_accum = 0;
-%     body4.err_vel_prev = 0;
-%     
-%     body4.Kp_vel = 100;
-%     body4.Ki_vel = 0;
-%     body4.Kd_vel = 0;
-%     
-%     body5.des_pos = 0*pi/180;
-%     body5.err_pos = 0;
-%     body5.err_pos_accum = 0;
-%     body5.err_pos_prev = 0;
-%     
-%     body5.Kp_pos = 30000;
-%     body5.Ki_pos = 0;
-%     body5.Kd_pos = 2;
-%     
-%     body5.des_vel = 0;
-%     body5.err_vel = 0;
-%     body5.err_vel_accum = 0;
-%     body5.err_vel_prev = 0;
-%     
-%     body5.Kp_vel = 100;
-%     body5.Ki_vel = 0;
-%     body5.Kd_vel = 0;
-%     
-%     body6.des_pos = 0*pi/180;
-%     body6.err_pos = 0;
-%     body6.err_pos_accum = 0;
-%     body6.err_pos_prev = 0;
-%     
-%     body6.Kp_pos = 30000;
-%     body6.Ki_pos = 0;
-%     body6.Kd_pos = 2;
-%     
-%     body6.des_vel = 0;
-%     body6.err_vel = 0;
-%     body6.err_vel_accum = 0;
-%     body6.err_vel_prev = 0;
-%     
-%     body6.Kp_vel = 100;
-%     body6.Ki_vel = 0;
-%     body6.Kd_vel = 0;
+    
+    body1.des_pos = pi;
+    body1.err_pos = 0;
+    body1.err_pos_accum = 0;
+    body1.err_pos_prev = 0;
+    
+    body1.Kp_pos = 30000;
+    body1.Ki_pos = 0;
+    body1.Kd_pos = 2;
+    
+    body1.des_vel = 0;
+    body1.err_vel = 0;
+    body1.err_vel_accum = 0;
+    body1.err_vel_prev = 0;
+    
+    body1.Kp_vel = 100;
+    body1.Ki_vel = 0;
+    body1.Kd_vel = 0;
+    
+    body2.des_pos = 0*pi/180;
+    body2.err_pos = 0;
+    body2.err_pos_accum = 0;
+    body2.err_pos_prev = 0;
+    
+    body2.Kp_pos = 30000;
+    body2.Ki_pos = 0;
+    body2.Kd_pos = 2;
+    
+    body2.des_vel = 0;
+    body2.err_vel = 0;
+    body2.err_vel_accum = 0;
+    body2.err_vel_prev = 0;
+    
+    body2.Kp_vel = 100;
+    body2.Ki_vel = 0;
+    body2.Kd_vel = 0;
+        
+    body3.des_pos = 0*pi/180;
+    body3.err_pos = 0;
+    body3.err_pos_accum = 0;
+    body3.err_pos_prev = 0;
+    
+    body3.Kp_pos = 30000;
+    body3.Ki_pos = 0;
+    body3.Kd_pos = 2;
+    
+    body3.des_vel = 0;
+    body3.err_vel = 0;
+    body3.err_vel_accum = 0;
+    body3.err_vel_prev = 0;
+    
+    body3.Kp_vel = 100;
+    body3.Ki_vel = 0;
+    body3.Kd_vel = 0;
+    
+    body4.des_pos = 0*pi/180;
+    body4.err_pos = 0;
+    body4.err_pos_accum = 0;
+    body4.err_pos_prev = 0;
+    
+    body4.Kp_pos = 30000;
+    body4.Ki_pos = 0;
+    body4.Kd_pos = 2;
+    
+    body4.des_vel = 0;
+    body4.err_vel = 0;
+    body4.err_vel_accum = 0;
+    body4.err_vel_prev = 0;
+    
+    body4.Kp_vel = 100;
+    body4.Ki_vel = 0;
+    body4.Kd_vel = 0;
+    
+    body5.des_pos = 0*pi/180;
+    body5.err_pos = 0;
+    body5.err_pos_accum = 0;
+    body5.err_pos_prev = 0;
+    
+    body5.Kp_pos = 30000;
+    body5.Ki_pos = 0;
+    body5.Kd_pos = 2;
+    
+    body5.des_vel = 0;
+    body5.err_vel = 0;
+    body5.err_vel_accum = 0;
+    body5.err_vel_prev = 0;
+    
+    body5.Kp_vel = 100;
+    body5.Ki_vel = 0;
+    body5.Kd_vel = 0;
+    
+    body6.des_pos = 0*pi/180;
+    body6.err_pos = 0;
+    body6.err_pos_accum = 0;
+    body6.err_pos_prev = 0;
+    
+    body6.Kp_pos = 30000;
+    body6.Ki_pos = 0;
+    body6.Kd_pos = 2;
+    
+    body6.des_vel = 0;
+    body6.err_vel = 0;
+    body6.err_vel_accum = 0;
+    body6.err_vel_prev = 0;
+    
+    body6.Kp_vel = 100;
+    body6.Ki_vel = 0;
+    body6.Kd_vel = 0;
     
 end

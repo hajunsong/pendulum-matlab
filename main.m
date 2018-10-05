@@ -1,4 +1,4 @@
-% clc; clear all; close all;
+clc; clear all; close all;
 
 global t_current h_temp start_time end_time h Y Yp body body1 body2 body3 body4 body5 body6 num_body
 
@@ -6,7 +6,7 @@ format long g
 
 read_data;
 
-num_body = 3;
+num_body = 1;
 switch(num_body)
     case 1
         body = body1;
@@ -29,21 +29,23 @@ t_current = 0;
 indx = 1;
 h_temp = h/4;
 
-% delta_theta = body(1).des_pos - body1.qi;
-% a = 6*delta_theta/3^5;
-% b = -15*delta_theta/3^4;
-% c = 10*delta_theta/3^3;
+delta_theta = body(1).des_pos - body1.qi;
+a = 6*delta_theta/3^5;
+b = -15*delta_theta/3^4;
+c = 10*delta_theta/3^3;
 
-% t_inter = 2;
-% flag = 0;
+t_inter = 2;
+flag = 0;
 
 file_name = sprintf('matlab_body%d.txt', num_body);
 fp = fopen(file_name, 'w+');
+
 data = zeros(1, num_body);
 while(t_current <= end_time)
 %     if t_current <= t_inter
-%         body(2).des_pos = a*t_current^5 + b*t_current^4 + c*t_current^3 + body(2).qi;
+%         body(1).des_pos = a*t_current^5 + b*t_current^4 + c*t_current^3;
 %     end
+    
     dynamics_analysis;
     
     [Y_next, t_next, intcount] = absh3(t_current, Y, Yp, h, intcount);
@@ -54,15 +56,16 @@ while(t_current <= end_time)
         data(indx, 3*i-1) = body(i).qi;
         data(indx, 3*i) = body(i).dqi;
         data(indx, 3*i+1) = body(i).ddqi;
+        data(indx, 3*i+2) = body(i).r_hat;
         fprintf(fp, '%.5f\t%.5f\t%.5f\t', body(i).qi, body(i).dqi, body(i).ddqi);
     end
     fprintf(fp, '\n');
-    fprintf(fp2, '%.5f\t%.5f\t%.5f\t%.5f\n', t_current, body(1).ric(1), body(1).ric(2), body(1).ric(3));
    
-%     body(2).r_hat = body(2).K*Y_next(16,1);
+    u_vec = [1;0;0];
+    body(1).r_hat = body(1).K*(Y_next(2*num_body + 1,1) - u_vec'*body(1).Jic*u_vec*0.5*body(1).dqi*body(1).dqi);
     
 %     if t_current > t_inter && flag == 0
-%         body(2).des_pos = body(2).qi;
+%         body(1).des_pos = body(1).qi;
 %         flag = 1;
 %     end
     
@@ -75,3 +78,4 @@ fclose(fp);
 save('matlab_save_data','data')
 
 plotting;
+% plotting2;

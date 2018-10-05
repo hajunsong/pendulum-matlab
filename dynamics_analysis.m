@@ -80,19 +80,18 @@ function dynamics_analysis
         body(i).Di = [body(i).drit*body(i).Hi + body(i).rit*body(i).dHi; body(i).dHi]*body(i).dqi;
 
         %% Control
-%         body(i).err_pos = body(i).des_pos - body(i).qi;
-%         body(i).err_pos_accum = body(i).err_pos_accum + body(i).err_pos*h_temp;
-%         body(i).Tc_pos = body(i).Kp_pos*body(i).err_pos + body(i).Kd_pos*(body(i).err_pos - body(i).err_pos_prev)/h_temp + body(i).Ki_pos*body(i).err_pos_accum;
-%         body(i).err_pos_prev = body(i).err_pos;
-% 
-%         body(i).err_vel = body(i).des_vel - body(i).dqi;
-%         body(i).err_vel_accum = body(i).err_vel_accum + body(i).err_vel*h_temp;
-%         body(i).Tc_vel = body(i).Kp_vel*body(i).err_vel + body(i).Kd_vel*(body(i).err_vel - body(i).err_vel_prev)/h_temp + body(i).Ki_vel*body(i).err_vel_accum;
-%         body(i).err_vel_prev = body(i).err_vel;
-% 
-%         body(i).Tg = -body(i).mi*g*body(i).rhoip(2)*cos(body(i).qi);
-% %         body(i).T_control = body(i).Tc_pos + body(i).Tc_vel + body(i).Tg;
-%         body(i).T_control = 0;
+        body(i).err_pos = body(i).des_pos - body(i).qi;
+        body(i).err_pos_accum = body(i).err_pos_accum + body(i).err_pos*h_temp;
+        body(i).Tc_pos = body(i).Kp_pos*body(i).err_pos + body(i).Kd_pos*(body(i).err_pos - body(i).err_pos_prev)/h_temp + body(i).Ki_pos*body(i).err_pos_accum;
+        body(i).err_pos_prev = body(i).err_pos;
+
+        body(i).err_vel = body(i).des_vel - body(i).dqi;
+        body(i).err_vel_accum = body(i).err_vel_accum + body(i).err_vel*h_temp;
+        body(i).Tc_vel = body(i).Kp_vel*body(i).err_vel + body(i).Kd_vel*(body(i).err_vel - body(i).err_vel_prev)/h_temp + body(i).Ki_vel*body(i).err_vel_accum;
+        body(i).err_vel_prev = body(i).err_vel;
+
+        body(i).T_control = body(i).Tc_pos + body(i).Tc_vel;
+        body(i).T_control = 0;
     end
     
     %% system EQM
@@ -120,31 +119,31 @@ function dynamics_analysis
         for j = 1 : i
             D_temp = D_temp + body(j).Di;
         end
-        Q(i,1) = body(i).Bi'*(body(i).Li - body(i).Ki*D_temp);
+        % gravity compensation force
+        body(i).Fg = [body(i).Fic;body(i).rict*body(i).Fic];
+        body(i).Tg = body(i).Bi'*(-body(i).Fg - body(i).Ki*D_temp);
+        
+        body(i).T_in = 10;
+%         body(i).T_in = body(i).T_control;
+        
+        body(i).Ta = body(i).Tg + body(i).T_in;
+        
+        if t_current >= 2 && t_current <= 2.5
+            body(i).Td = -10;
+        else
+            body(i).Td = 0;
+        end
+        body(i).Td = 0;
+        
+        Q(i,1) = body(i).Bi'*(body(i).Li - body(i).Ki*D_temp) + body(i).Ta + body(i).Td;
+        
+        body(i).yp = Q(i,1) + body(i).Tg - body(i).r_hat;
     end
     
     dYh = M\Q;
     for i = 1 : num_body
         body(i).ddqi = dYh(i);
     end
-    
-%     for i = 2 : num_body
-%         %% System EQM
-%         M = body(i).Bi'*body(i).Ki*body(i).Bi;
-% %         if t_current >= 0.3 && t_current <= 0.32
-% %             body(i).Td = -100;
-% %         else
-% %             body(i).Td = 0;
-% %         end
-%         body(i).Td = 0;
-% 
-%         Q = body(i).Bi'*(body(i).Li - body(i).Ki*body(i).Di) + body(i).T_control + body(i).Td;
-% 
-%         body(i).ddqi = M\Q;
-%     
-%         %% Collision Detect
-%         body(i).r_hat_dot = body(i).T_control - body(i).Bi'*(body(i).Li - [body(i).Fic;body(i).rict*body(i).Fic] - body(i).Ki*body(i).Di) - body(i).r_hat;
-%     end
     
     %% dqddq2Yp
     for i = 1 : num_body
@@ -153,5 +152,6 @@ function dynamics_analysis
     for i = 1 : num_body
         Yp(i+num_body,1) = body(i).ddqi;
     end
+    Yp(num_body*2 + 1, 1) = body(1).yp;
 
 end

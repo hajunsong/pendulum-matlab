@@ -31,7 +31,7 @@ octave-workspace
 *.mat
 
 # Adams file
-Adams - View
+*.lnk
 aview.*
 *.cmd
 

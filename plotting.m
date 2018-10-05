@@ -31,13 +31,21 @@ for i = 1 : num_body
     for j = 1 : 3
         subplot(3, 1, j)
         plot(matlab(:,1), matlab(:,index), 'LineWidth', 2)
-        hold on
-        plot(adams(:,1), adams(:,index),'--','LineWidth',2)
+%         hold on
+%         plot(adams(:,1), adams(:,index),'--','LineWidth',2)
         grid on
         xlabel('Time [s]')
         ylabel(ylabel_text(j))
         set(gca,'FontSize',13)
-        legend('MATLAB','ADAMS')
+%         legend('MATLAB','ADAMS')
         index = index + 1;
     end
 end
+
+figure
+set(gcf,'color',[1,1,1])
+plot(matlab(:,1), matlab(:,5), 'LineWidth',2)
+grid on
+xlabel('Time [s]')
+ylabel('Rasidual [Nm]')
+set(gca,'FontSize',13)
