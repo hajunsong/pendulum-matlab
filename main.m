@@ -27,28 +27,31 @@ define_Y_vector;
 intcount = 1;
 t_current = 0;
 indx = 1;
-h_temp = h/4;
 
-delta_theta = body(1).des_pos - body1.qi;
-a = 6*delta_theta/3^5;
-b = -15*delta_theta/3^4;
-c = 10*delta_theta/3^3;
+delta_w = body(1).des_vel;
+t1 = 0.5;
+a = -2*delta_w/t1^3;
+b = 3*delta_w/t1^2;
 
 t_inter = 2;
 flag = 0;
+
+Y_old = zeros(size(Y,1),1);
+Yp_old = zeros(size(Y,1),1);
 
 file_name = sprintf('matlab_body%d.txt', num_body);
 fp = fopen(file_name, 'w+');
 
 data = zeros(1, num_body);
 while(t_current <= end_time)
-%     if t_current <= t_inter
-%         body(1).des_pos = a*t_current^5 + b*t_current^4 + c*t_current^3;
-%     end
+    if t_current <= t1
+        body(1).des_vel = a*t_current^3 + b*t_current^2;
+    end
     
     dynamics_analysis;
     
-    [Y_next, t_next, intcount] = absh3(t_current, Y, Yp, h, intcount);
+%     [Y, t_current, intcount] = absh3(t_current, Y, Yp, h, intcount);
+    Y = Y_old + Yp_old*h + 0.5*h*(Yp - Yp_old);
     
     data(indx,1) = t_current;
     fprintf(fp, '%.5f\t',t_current);
@@ -61,16 +64,20 @@ while(t_current <= end_time)
     end
     fprintf(fp, '\n');
    
-    body(1).r_hat = body(1).K*(Y_next(2*num_body + 1,1));
+    body(1).p = 0.5*body(1).dqi^2*(body(1).Jic(1,1)*body(1).wi(1)^2 + body(1).Jic(2,2)*body(1).wi(2)^2 + body(1).Jic(3,3)*body(1).wi(3)^2);
+    body(1).r_hat = body(1).K*(Y(2*num_body + 1,1) - body(1).p);
     
 %     if t_current > t_inter && flag == 0
 %         body(1).des_pos = body(1).qi;
 %         flag = 1;
 %     end
     
-    Y = Y_next;
-    h_temp = t_next - t_current;
-    t_current = t_next
+%     Y = Y_next;
+%     h_temp = t_next - t_current;
+%     t_current = t_next
+    Y_old = Y;
+    Yp_old = Yp;
+    t_current = t_current + h
     indx = indx + 1;
 end
 fclose(fp);

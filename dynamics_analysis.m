@@ -1,6 +1,6 @@
 function dynamics_analysis
 
-    global Y body h_temp g
+    global Y body g h
     global t_current num_body A0 C01 s01p
     global Yp
     
@@ -81,17 +81,17 @@ function dynamics_analysis
 
         %% Control
         body(i).err_pos = body(i).des_pos - body(i).qi;
-        body(i).err_pos_accum = body(i).err_pos_accum + body(i).err_pos*h_temp;
-        body(i).Tc_pos = body(i).Kp_pos*body(i).err_pos + body(i).Kd_pos*(body(i).err_pos - body(i).err_pos_prev)/h_temp + body(i).Ki_pos*body(i).err_pos_accum;
+        body(i).err_pos_accum = body(i).err_pos_accum + body(i).err_pos*h;
+        body(i).Tc_pos = body(i).Kp_pos*body(i).err_pos + body(i).Kd_pos*(body(i).err_pos - body(i).err_pos_prev)/h + body(i).Ki_pos*body(i).err_pos_accum;
         body(i).err_pos_prev = body(i).err_pos;
 
         body(i).err_vel = body(i).des_vel - body(i).dqi;
-        body(i).err_vel_accum = body(i).err_vel_accum + body(i).err_vel*h_temp;
-        body(i).Tc_vel = body(i).Kp_vel*body(i).err_vel + body(i).Kd_vel*(body(i).err_vel - body(i).err_vel_prev)/h_temp + body(i).Ki_vel*body(i).err_vel_accum;
+        body(i).err_vel_accum = body(i).err_vel_accum + body(i).err_vel*h;
+        body(i).Tc_vel = body(i).Kp_vel*body(i).err_vel + body(i).Kd_vel*(body(i).err_vel - body(i).err_vel_prev)/h + body(i).Ki_vel*body(i).err_vel_accum;
         body(i).err_vel_prev = body(i).err_vel;
 
         body(i).T_control = body(i).Tc_pos + body(i).Tc_vel;
-        body(i).T_control = 0;
+%         body(i).T_control = 0;
     end
     
     %% system EQM
@@ -120,24 +120,23 @@ function dynamics_analysis
             D_temp = D_temp + body(j).Di;
         end
         % gravity compensation force
-        body(i).Fg = [body(i).Fic;body(i).rict*body(i).Fic];
-        body(i).Tg = body(i).Bi'*(-body(i).Fg - body(i).Ki*D_temp);
+        body(i).Fg = -[body(i).Fic;body(i).rict*body(i).Fic];
+        body(i).Tg = body(i).Bi'*(body(i).Fg - body(i).Ki*D_temp);
         
-        body(i).T_in = 10;
-%         body(i).T_in = body(i).T_control;
+        body(i).T_in = body(i).T_control;
         
         body(i).Ta = body(i).Tg + body(i).T_in;
         
-        if t_current >= 2 && t_current <= 2.5
-            body(i).Td = -10;
+        if t_current >= 2 && t_current <= 2.05
+            body(i).Td = -15;
         else
             body(i).Td = 0;
         end
-        body(i).Td = 0;
+%         body(i).Td = 0;
         
         Q(i,1) = body(i).Bi'*(body(i).Li - body(i).Ki*D_temp) + body(i).Ta + body(i).Td;
         
-        body(i).yp = Q(i,1) - body(i).r_hat;
+        body(i).yp = body(i).Ta - body(i).Tg - body(i).r_hat ;
     end
     
     dYh = M\Q;
