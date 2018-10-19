@@ -49,7 +49,7 @@ function read_data
     
     body1.r_hat = 0;
     body1.r_hat_dot = 0;
-    body1.K = 1500;
+    body1.K = 300;
     
     %% read_body2
     body2.qi = 0;

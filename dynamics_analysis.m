@@ -93,6 +93,113 @@ function dynamics_analysis
         body(i).T_control = body(i).Tc_pos + body(i).Tc_vel;
 %         body(i).T_control = 0;
     end
+%     
+%     t1 = cos(body(1).qi);
+%     t2 = sin(body(1).qi);
+%     t3 = t1 * A0(3,1) + t2 * A0(3,2);
+%     t4 = -t1 * A0(3,2) + t2 * A0(3,1);
+%     t5 = t3 * body(1).rhoip(1) - t4 * body(1).rhoip(2) + A0(3,3) * body(1).rhoip(3) + body(1).ri(3);
+%     t6 = t1 * A0(2,1) + t2 * A0(2,2);
+%     t7 = -t1 * A0(2,2) + t2 * A0(2,1);
+%     t8 = t6 * body(1).rhoip(1) - t7 * body(1).rhoip(2) + A0(2,3) * body(1).rhoip(3) + body(1).ri(2);
+%     t9 = body(1).mi * t5;
+%     t10 = body(1).mi * t8;
+%     t11 = t1 * A0(1,1) + t2 * A0(1,2);
+%     t1 = -t1 * A0(1,2) + t2 * A0(1,1);
+%     t2 = -t1 * body(1).rhoip(2) + t11 * body(1).rhoip(1) + A0(1,3) * body(1).rhoip(3) + body(1).ri(1);
+%     t12 = body(1).mi * t5;
+%     t13 = body(1).mi * t2;
+%     t14 = body(1).mi * t8;
+%     t15 = body(1).mi * t2;
+%     t16 = -t1 * body(1).Cii(2,1) + t11 * body(1).Cii(1,1) + A0(1,3) * body(1).Cii(3,1);
+%     t17 = -t1 * body(1).Cii(2,2) + t11 * body(1).Cii(1,2) + A0(1,3) * body(1).Cii(3,2);
+%     t1 = -t1 * body(1).Cii(2,3) + t11 * body(1).Cii(1,3) + A0(1,3) * body(1).Cii(3,3);
+%     t11 = t1 * body(1).Jip(3,1) + t16 * body(1).Jip(1,1) + t17 * body(1).Jip(2,1);
+%     t18 = t1 * body(1).Jip(3,2) + t16 * body(1).Jip(1,2) + t17 * body(1).Jip(2,2);
+%     t19 = t1 * body(1).Jip(3,3) + t16 * body(1).Jip(1,3) + t17 * body(1).Jip(2,3);
+%     t20 = t5 ^ 2;
+%     t21 = t8 ^ 2;
+%     t22 = t6 * body(1).Cii(1,1) - t7 * body(1).Cii(2,1) + A0(2,3) * body(1).Cii(3,1);
+%     t23 = t6 * body(1).Cii(1,2) - t7 * body(1).Cii(2,2) + A0(2,3) * body(1).Cii(3,2);
+%     t6 = t6 * body(1).Cii(1,3) - t7 * body(1).Cii(2,3) + A0(2,3) * body(1).Cii(3,3);
+%     t7 = t3 * body(1).Cii(1,1) - t4 * body(1).Cii(2,1) + A0(3,3) * body(1).Cii(3,1);
+%     t24 = t3 * body(1).Cii(1,2) - t4 * body(1).Cii(2,2) + A0(3,3) * body(1).Cii(3,2);
+%     t3 = t3 * body(1).Cii(1,3) - t4 * body(1).Cii(2,3) + A0(3,3) * body(1).Cii(3,3);
+%     t4 = t22 * body(1).Jip(1,1) + t23 * body(1).Jip(2,1) + t6 * body(1).Jip(3,1);
+%     t25 = t22 * body(1).Jip(1,2) + t23 * body(1).Jip(2,2) + t6 * body(1).Jip(3,2);
+%     t26 = t22 * body(1).Jip(1,3) + t23 * body(1).Jip(2,3) + t6 * body(1).Jip(3,3);
+%     t27 = t2 ^ 2;
+%     t28 = t24 * body(1).Jip(2,1) + t3 * body(1).Jip(3,1) + t7 * body(1).Jip(1,1);
+%     t29 = t24 * body(1).Jip(2,2) + t3 * body(1).Jip(3,2) + t7 * body(1).Jip(1,2);
+%     t30 = t24 * body(1).Jip(2,3) + t3 * body(1).Jip(3,3) + t7 * body(1).Jip(1,3);
+%     body(1).Mih = [body(1).mi 0 0 0 t9 -t10; 
+%         0 body(1).mi 0 -t12 0 t13; 
+%         0 0 body(1).mi t14 -t15 0; 
+%         0 -t9 t10 t1 * t19 + t11 * t16 + t17 * t18 + (t20 + t21) * body(1).mi -t10 * t2 + t11 * t22 + t18 * t23 + t19 * t6 t11 * t7 + t18 * t24 + t19 * t3 - t9 * t2; 
+%         t12 0 -t13 t1 * t26 - t13 * t8 + t16 * t4 + t17 * t25 t22 * t4 + t23 * t25 + t26 * t6 + (t20 + t27) * body(1).mi -t10 * t5 + t24 * t25 + t26 * t3 + t4 * t7; 
+%         -t14 t15 0 t1 * t30 - t15 * t5 + t16 * t28 + t17 * t29 t22 * t28 + t23 * t29 + t30 * t6 - t9 * t8 t24 * t29 + t28 * t7 + t3 * t30 + (t21 + t27) * body(1).mi;];
+% 
+%     t1 = cos(body(1).qi);
+%     t2 = sin(body(1).qi);
+%     t3 = t1 * A0(1,1) + t2 * A0(1,2);
+%     t4 = -t1 * A0(1,2) + t2 * A0(1,1);
+%     t5 = t3 * body(1).rhoip(1);
+%     t6 = t4 * body(1).rhoip(2);
+%     t7 = A0(1,3) * body(1).rhoip(3);
+%     t8 = t1 * A0(2,1) + t2 * A0(2,2);
+%     t9 = -t1 * A0(2,2) + t2 * A0(2,1);
+%     t10 = t8 * body(1).rhoip(1);
+%     t11 = t9 * body(1).rhoip(2);
+%     t12 = A0(2,3) * body(1).rhoip(3);
+%     t13 = t5 - t6 + body(1).ri(1) + t7;
+%     t14 = -t10 + t11 - t12 - body(1).ri(2);
+%     t15 = body(i).dqi * (t13 * A0(2,3) + t14 * A0(1,3) + A0(1,3) * body(1).ri(2) - A0(2,3) * body(1).ri(1));
+%     t16 = t1 * A0(3,1) + t2 * A0(3,2);
+%     t1 = -t1 * A0(3,2) + t2 * A0(3,1);
+%     t2 = t16 * body(1).rhoip(1);
+%     t17 = t1 * body(1).rhoip(2);
+%     t18 = A0(3,3) * body(1).rhoip(3);
+%     t19 = t2 - t17 + t18;
+%     t13 = body(i).dqi * (t13 * A0(3,3) + (-t19 - body(1).ri(3)) * A0(1,3) + A0(1,3) * body(1).ri(3) - A0(3,3) * body(1).ri(1));
+%     t20 = t13 * A0(3,3);
+%     t21 = body(1).mi * body(i).dqi;
+%     t14 = body(i).dqi * (t14 * A0(3,3) + (t19 + body(1).ri(3)) * A0(2,3) - A0(2,3) * body(1).ri(3) + A0(3,3) * body(1).ri(2));
+%     t19 = t14 * A0(3,3);
+%     t22 = A0(2,3) * t14;
+%     t23 = A0(1,3) * t13;
+%     t10 = t10 + body(1).ri(2) - t11 + t12;
+%     t2 = body(1).ri(3) + t2 - t17 + t18;
+%     t11 = t8 * body(1).Cii(1,1) - t9 * body(1).Cii(2,1) + A0(2,3) * body(1).Cii(3,1);
+%     t12 = t8 * body(1).Cii(1,2) - t9 * body(1).Cii(2,2) + A0(2,3) * body(1).Cii(3,2);
+%     t8 = t8 * body(1).Cii(1,3) - t9 * body(1).Cii(2,3) + A0(2,3) * body(1).Cii(3,3);
+%     t9 = t11 * body(1).Jip(1,1) + t12 * body(1).Jip(2,1) + t8 * body(1).Jip(3,1);
+%     t17 = t3 * body(1).Cii(1,1) - t4 * body(1).Cii(2,1) + A0(1,3) * body(1).Cii(3,1);
+%     t18 = t11 * body(1).Jip(1,2) + t12 * body(1).Jip(2,2) + t8 * body(1).Jip(3,2);
+%     t24 = t3 * body(1).Cii(1,2) - t4 * body(1).Cii(2,2) + A0(1,3) * body(1).Cii(3,2);
+%     t25 = t11 * body(1).Jip(1,3) + t12 * body(1).Jip(2,3) + t8 * body(1).Jip(3,3);
+%     t3 = t3 * body(1).Cii(1,3) - t4 * body(1).Cii(2,3) + A0(1,3) * body(1).Cii(3,3);
+%     t4 = t17 * t9 + t18 * t24 + t25 * t3;
+%     t26 = -t1 * body(1).Cii(2,1) + t16 * body(1).Cii(1,1) + A0(3,3) * body(1).Cii(3,1);
+%     t27 = -t1 * body(1).Cii(2,2) + t16 * body(1).Cii(1,2) + A0(3,3) * body(1).Cii(3,2);
+%     t1 = -t1 * body(1).Cii(2,3) + t16 * body(1).Cii(1,3) + A0(3,3) * body(1).Cii(3,3);
+%     t16 = t1 * body(1).Jip(3,1) + t26 * body(1).Jip(1,1) + t27 * body(1).Jip(2,1);
+%     t28 = t1 * body(1).Jip(3,2) + t26 * body(1).Jip(1,2) + t27 * body(1).Jip(2,2);
+%     t29 = t1 * body(1).Jip(3,3) + t26 * body(1).Jip(1,3) + t27 * body(1).Jip(2,3);
+%     t30 = t16 * t17 + t24 * t28 + t29 * t3;
+%     t31 = t11 * t9 + t12 * t18 + t25 * t8;
+%     t32 = t11 * t16 + t12 * t28 + t29 * t8;
+%     t9 = t1 * t25 + t18 * t27 + t26 * t9;
+%     t16 = t1 * t29 + t16 * t26 + t27 * t28;
+%     t5 = t5 - t6 + body(1).ri(1) + t7;
+%     t6 = t17 * body(1).Jip(1,1) + t24 * body(1).Jip(2,1) + t3 * body(1).Jip(3,1);
+%     t7 = t17 * body(1).Jip(1,2) + t24 * body(1).Jip(2,2) + t3 * body(1).Jip(3,2);
+%     t18 = t17 * body(1).Jip(1,3) + t24 * body(1).Jip(2,3) + t3 * body(1).Jip(3,3);
+%     t3 = t17 * t6 + t18 * t3 + t24 * t7;
+%     t8 = t11 * t6 + t12 * t7 + t18 * t8;
+%     t1 = t1 * t18 + t26 * t6 + t27 * t7;
+%     t6 = [-body(i).dqi * ((body(1).mi * t15 * t5 - body(i).dqi * (t3 * A0(2,3) - t4 * A0(1,3))) * A0(1,3) + (body(1).mi * t15 * t10 - body(i).dqi * (-t31 * A0(1,3) + t8 * A0(2,3))) * A0(2,3) + (body(1).mi * (t10 * t13 + t14 * t5) - body(i).dqi * (t1 * A0(2,3) - t9 * A0(1,3))) * A0(3,3))];
+%     body(i).Qih = [[t21 * (t15 * A0(2,3) + t20)] [-t21 * (t15 * A0(1,3) + t19)] [body(1).mi * ((-t23 + t22) * body(i).dqi + g)] [body(i).dqi * (body(i).dqi * (t31 * A0(3,3) - t32 * A0(2,3)) * A0(2,3) + body(i).dqi * (-t16 * A0(2,3) + t9 * A0(3,3)) * A0(3,3)) + (t10 * (t22 * body(i).dqi + g) + t19 * body(i).dqi * t2) * body(1).mi + body(i).dqi * (body(1).mi * (-t10 * t13 + t15 * t2) + body(i).dqi * (-t30 * A0(2,3) + t4 * A0(3,3))) * A0(1,3)] [-body(i).dqi * (body(i).dqi * (t3 * A0(3,3) - t30 * A0(1,3)) * A0(1,3) + body(i).dqi * (t1 * A0(3,3) - t16 * A0(1,3)) * A0(3,3)) - (t5 * (-t23 * body(i).dqi + g) - t20 * body(i).dqi * t2) * body(1).mi - body(i).dqi * (-body(1).mi * (-t14 * t5 + t15 * t2) + body(i).dqi * (-t32 * A0(1,3) + t8 * A0(3,3))) * A0(2,3)] t6;]';
+
     
     %% system EQM
     for i = num_body : -1 : 1
@@ -126,19 +233,91 @@ function dynamics_analysis
         body(i).T_in = body(i).T_control;
         
         body(i).Ta = body(i).Tg + body(i).T_in;
+%         body(i).Ta = 0;
         
         if t_current >= 2 && t_current <= 2.05
             body(i).Td = -15;
         else
             body(i).Td = 0;
         end
-%         body(i).Td = 0;
+        body(i).Td = 0;
         
         Q(i,1) = body(i).Bi'*(body(i).Li - body(i).Ki*D_temp) + body(i).Ta + body(i).Td;
         
         body(i).yp = body(i).Ta - body(i).Tg - body(i).r_hat ;
     end
-    
+%     
+%     t1 = (A0(3,1) ^ 2);
+%     t2 = (A0(3,2) ^ 2);
+%     t3 = (A0(2,1) ^ 2);
+%     t4 = (A0(2,2) ^ 2);
+%     t5 = (A0(1,2) * A0(3,2));
+%     t6 = (A0(1,1) * A0(3,1));
+%     t7 = (A0(1,2) ^ 2);
+%     t8 = (A0(1,1) ^ 2);
+%     t9 = (A0(1,3) ^ 2);
+%     t10 = (A0(3,3) ^ 2);
+%     t11 = (A0(2,3) ^ 2);
+%     t12 = 2 * A0(3,3);
+%     t13 = -t12 * (t6 - t5) * A0(1,3) - (-t4 + t3 - t1 + t2) * t9 - (-t8 + t7 - t4 + t3) * t10 - t11 * (-t8 + t7 - t1 + t2);
+%     t14 = A0(2,1) * A0(2,2);
+%     t15 = A0(3,1) * A0(3,2);
+%     t16 = A0(1,1) * A0(1,2);
+%     t14 = -t11 * (t16 + t15) + t9 * (t14 - t15) + (A0(1,3) * (A0(1,1) * A0(3,2) + A0(1,2) * A0(3,1)) + (-t16 + t14) * A0(3,3)) * A0(3,3);
+%     t15 = body(1).rhoip(1) ^ 2;
+%     t16 = body(1).rhoip(2) ^ 2;
+%     t17 = t14 * body(1).rhoip(2);
+%     t18 = cos(body(1).qi);
+%     t19 = sin(body(1).qi);
+%     t20 = A0(2,3) * body(1).rhoip(3);
+%     t21 = body(1).ri(2) + t20;
+%     t22 = body(1).ri(2) - t20;
+%     t23 = t21 * (t9 * A0(2,1) + A0(3,3) * (A0(2,1) * A0(3,3) - A0(2,3) * A0(3,1))) + A0(1,1) * A0(2,3) * t22 * A0(1,3);
+%     t21 = t21 * (t9 * A0(2,2) + A0(3,3) * (A0(2,2) * A0(3,3) - A0(2,3) * A0(3,2))) + A0(1,2) * A0(2,3) * t22 * A0(1,3);
+%     M = ((-4 * t17 * body(1).rhoip(1) - t13 * (-t15 + t16)) * t18 ^ 2 - (4 * t20 * body(1).ri(2) * t9) + (2 * t17 * body(1).rhoip(1)) + (t15 * (-t5 * t12 * A0(1,3) - t10 * (-t7 + t4) + t11 * (t7 + t2) - t9 * (t4 - t2))) + (t16 * (-t6 * t12 * A0(1,3) - t10 * (-t8 + t3) + t11 * (t8 + t1) - t9 * (t3 - t1)))) * body(1).mi + (t11 * body(1).Jic(2,2)) + ((body(1).Jic(1,1) * A0(1,3) + (body(1).Jic(1,3) + body(1).Jic(3,1)) * A0(3,3) + A0(2,3) * (body(1).Jic(1,2) + body(1).Jic(2,1))) * A0(1,3)) + ((A0(2,3) * (body(1).Jic(2,3) + body(1).Jic(3,2)) + body(1).Jic(3,3) * A0(3,3)) * A0(3,3)) - 0.2e1 * body(1).mi * (t18 * ((t23 * body(1).rhoip(1)) + (t21 * body(1).rhoip(2)) + (t14 * t15 + (t13 * body(1).rhoip(1) - t17) * body(1).rhoip(2)) * t19) + t19 * (t21 * body(1).rhoip(1) - t23 * body(1).rhoip(2)));
+% 
+%     t1 = (A0(2,1) * A0(3,1) - A0(2,2) * A0(3,2));
+%     t2 = (A0(3,2) * A0(2,1) + A0(2,2) * A0(3,1));
+%     t3 = (body(1).rhoip(1) ^ 2);
+%     t4 = (body(1).rhoip(2) ^ 2);
+%     t5 = (t3 - t4);
+%     t6 = 2;
+%     t7 = t6 * body(1).rhoip(2);
+%     t8 = -t7 * t2 * body(1).rhoip(1) - t1 * t5;
+%     t9 = (A0(1,1) * A0(2,1) - A0(1,2) * A0(2,2));
+%     t10 = (A0(2,2) * A0(1,1) + A0(1,2) * A0(2,1));
+%     t11 = -t7 * t10 * body(1).rhoip(1) - t9 * t5;
+%     t12 = (A0(2,2) + A0(2,1));
+%     t13 = (A0(2,1) - A0(2,2));
+%     t14 = (A0(1,1) * A0(3,1) - A0(1,2) * A0(3,2));
+%     t15 = (A0(1,1) * A0(3,2) + A0(1,2) * A0(3,1));
+%     t16 = (A0(1,3) ^ 2);
+%     t17 = (A0(1,3) * t16);
+%     t18 = (A0(3,3) ^ 2);
+%     t19 = (A0(2,3) ^ 2);
+%     t20 = (A0(2,3) * t19);
+%     t21 = cos(body(1).qi);
+%     t1 = ((t2 * t5) / 0.2e1 - (body(1).rhoip(2) * t1 * body(1).rhoip(1)));
+%     t2 = -t7 * t9 * body(1).rhoip(1) + t10 * t5;
+%     t9 = A0(2,2) * body(1).rhoip(1);
+%     t10 = A0(2,1) * body(1).rhoip(2);
+%     t22 = t10 - t9;
+%     t23 = A0(2,1) * body(1).rhoip(1) + A0(2,2) * body(1).rhoip(2);
+%     t24 = A0(2,3) * t22;
+%     t25 = sin(body(1).qi);
+%     t26 = A0(3,1) * body(1).rhoip(1) + A0(3,2) * body(1).rhoip(2);
+%     t27 = A0(2,3) * body(1).rhoip(3);
+%     t28 = body(1).ri(2) + t27;
+%     t29 = A0(1,1) * body(1).rhoip(1) + A0(1,2) * body(1).rhoip(2);
+%     t19 = t18 * t28 - t19 * (body(1).ri(2) - t27);
+%     t30 = (A0(2,3) - A0(3,3)) * (A0(2,3) + A0(3,3)) - t16;
+%     t31 = body(1).dqi ^ 2;
+%     t32 = A0(3,1) * body(1).rhoip(2) - A0(3,2) * body(1).rhoip(1);
+%     t33 = A0(1,1) * body(1).rhoip(2) - A0(1,2) * body(1).rhoip(1);
+%     t34 = t22 * t32;
+%     t1 = (body(1).mi * (t21 * (-0.4e1 * t31 * ((t1 * t17) + (-(t18 * t2) / 0.2e1 + (A0(1,3) * (t1 * A0(3,3) - t24 * t23))) * A0(3,3) + (t20 * (-t7 * t14 * body(1).rhoip(1) + t15 * t5)) / 0.2e1 - (A0(3,3) * t2 * t16) / 0.2e1) * t25 + ((t23 * A0(1,3) - t29 * A0(2,3)) * g) + (-t6 * t28 * (t30 * t29 * A0(3,3) + t17 * t26) + (-4 * A0(2,3) * t28 * t23 * A0(3,3) - t6 * t26 * t19) * A0(1,3)) * t31) + t25 * (-(g * (t22 * A0(1,3) - t33 * A0(2,3))) + t31 * (t6 * t28 * (t30 * t33 * A0(3,3) + t17 * t32) + (t6 * t32 * t19 + 4 * t24 * t28 * A0(3,3)) * A0(1,3)))));
+%     Q = t6 * ((t31 * (t8 * t17 + (-t11 * t18 + A0(1,3) * (-t11 * A0(1,3) + t8 * A0(3,3) - (t12 * body(1).rhoip(1) - t13 * body(1).rhoip(2)) * (t12 * body(1).rhoip(2) + t13 * body(1).rhoip(1)) * A0(2,3))) * A0(3,3) - (t7 * t15 * body(1).rhoip(1) + t14 * t5) * t20) * t21 ^ 2 + t31 * (t33 * (t18 * t22 * A0(3,3) - t20 * t32) + ((t22 * A0(3,3) * t33 - t34 * A0(1,3)) * A0(1,3) - A0(3,3) * ((t3 * A0(2,2) ^ 2 + t4 * A0(2,1) ^ 2 + t6 * (-t10 * t9 + t27 * t28)) * A0(2,3) + t34 * A0(3,3))) * A0(1,3)) + (g * body(1).ri(2) * A0(1,3))) * body(1).mi - A0(2,3) * A0(3,3) * t31 * (body(1).Jic(1,1) * A0(1,3) + A0(2,3) * body(1).Jic(1,2) + A0(3,3) * body(1).Jic(1,3))) + t1;
+%     
     dYh = M\Q;
     for i = 1 : num_body
         body(i).ddqi = dYh(i);
@@ -151,6 +330,8 @@ function dynamics_analysis
     for i = 1 : num_body
         Yp(i+num_body,1) = body(i).ddqi;
     end
-    Yp(num_body*2 + 1, 1) = body(1).yp;
+    for i = 1 : num_body
+        Yp(num_body*2 + i, 1) = body(i).yp;
+    end
 
 end

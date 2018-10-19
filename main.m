@@ -49,9 +49,11 @@ while(t_current <= end_time)
     end
     
     dynamics_analysis;
+%     dynamics_analysis_fixed_3body;
     
-%     [Y, t_current, intcount] = absh3(t_current, Y, Yp, h, intcount);
-    Y = Y_old + Yp_old*h + 0.5*h*(Yp - Yp_old);
+%     [Y_next, t_next, intcount] = absh3(t_current, Y, Yp, h, intcount);
+    Y_next = Y_old + Yp_old*h + 0.5*h*(Yp - Yp_old);
+    t_next = t_current + h;
     
     data(indx,1) = t_current;
     fprintf(fp, '%.5f\t',t_current);
@@ -59,25 +61,29 @@ while(t_current <= end_time)
         data(indx, 3*i-1) = body(i).qi;
         data(indx, 3*i) = body(i).dqi;
         data(indx, 3*i+1) = body(i).ddqi;
-        data(indx, 3*i+2) = body(i).r_hat;
         fprintf(fp, '%.5f\t%.5f\t%.5f\t', body(i).qi, body(i).dqi, body(i).ddqi);
+    end
+    for i = 1 : num_body
+        data(indx, 3*num_body + 1 + i) = body(i).r_hat;
+        fprintf(fp, '%.5f\t', body(i).r_hat);
     end
     fprintf(fp, '\n');
    
-    body(1).p = 0.5*body(1).dqi^2*(body(1).Jic(1,1)*body(1).wi(1)^2 + body(1).Jic(2,2)*body(1).wi(2)^2 + body(1).Jic(3,3)*body(1).wi(3)^2);
-    body(1).r_hat = body(1).K*(Y(2*num_body + 1,1) - body(1).p);
+%     body(1).p = 0.5*body(1).dqi^2*(body(1).Jic(1,1)*body(1).wi(1)^2 + body(1).Jic(2,2)*body(1).wi(2)^2 + body(1).Jic(3,3)*body(1).wi(3)^2);
+    for i = 1 : num_body
+        body(i).p = 0.5*(body(i).mi*body(i).dric'*body(i).dric + body(i).wi'*body(i).Jic*body(i).wi);
+        body(i).r_hat = body(i).K*(Y(2*num_body + i,1) - body(i).p);
+    end
     
 %     if t_current > t_inter && flag == 0
 %         body(1).des_pos = body(1).qi;
 %         flag = 1;
 %     end
-    
-%     Y = Y_next;
-%     h_temp = t_next - t_current;
-%     t_current = t_next
+    Y = Y_next;
+    t_current = t_next
     Y_old = Y;
     Yp_old = Yp;
-    t_current = t_current + h
+%     t_current = t_current + h
     indx = indx + 1;
 end
 fclose(fp);

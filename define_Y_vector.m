@@ -14,6 +14,6 @@ function define_Y_vector
             Y(i+num_body,1) = body(i).dqi;
         end
     end
-    Y = [Y;0];
+    Y = [Y;zeros(num_body,1)];
 
 end
