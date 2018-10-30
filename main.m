@@ -51,9 +51,9 @@ while(t_current <= end_time)
     dynamics_analysis;
 %     dynamics_analysis_fixed_3body;
     
-%     [Y_next, t_next, intcount] = absh3(t_current, Y, Yp, h, intcount);
-    Y_next = Y_old + Yp_old*h + 0.5*h*(Yp - Yp_old);
-    t_next = t_current + h;
+    [Y_next, t_next, intcount] = absh3(t_current, Y, Yp, h, intcount);
+%     Y_next = Y_old + Yp_old*h + 0.5*h*(Yp - Yp_old);
+%     t_next = t_current + h;
     
     data(indx,1) = t_current;
     fprintf(fp, '%.5f\t',t_current);

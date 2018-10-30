@@ -1,9 +1,95 @@
-function dynamics_analysis
+clc; clear all; close all;
+global  AT AT1
+format long g
 
-    global Y body g h
-    global t_current num_body A0 C01 s01p
-    global Yp
-    
+t_end = 5;
+t = 0;
+h = 0.001;
+
+g = -9.80665;
+
+%% read_basebody
+A0 = [0,0,1;1,0,0;0,1,0];
+C01 = eye(3);
+s01p = [0;0;0];
+
+%% read_body
+body1.qi = 0;
+body1.dqi = 0;
+
+body1.ri = [0;0;0];
+
+body1.dri = [0;0;0];
+body1.wi = [0;0;0];
+
+body1.mi = 2;
+
+body1.Jip = [1.5 0 0;
+    0 1.5 0;
+    0 0 1.5];
+
+body1.rhoip = [0.15; 0; 0];
+
+body1.Cii = [0 0 -1;
+    0 1 0;
+    1 0 0];
+
+body1.Cij = [0 -1 0;
+    1 0 0;
+    0 0 1];
+
+body1.sijp = [0.3;0;0];
+
+body2.qi = 0;
+body2.dqi = 0;
+
+body2.ri = [0;0;0];
+
+body2.dri = [0;0;0];
+body2.wi = [0;0;0];
+
+body2.mi = 5;
+
+body2.Jip = [3 0 0;
+    0 3 0;
+    0 0 3];
+
+body2.rhoip = [0; -0.2; 0];
+
+body2.Cii = [0 1 0;
+    0 0 1;
+    1 0 0];
+
+body2.Cij = [0 -1 0;
+    1 0 0;
+    0 0 1];
+
+body2.sijp = [0;-0.4;0];
+
+body = [body1, body2];
+
+num_body = 2;
+
+%% define Y vector
+if num_body == 1
+    Y(1,1) = body.qi;
+    Y(2,1) = body.dqi;
+else
+    for i = 1 : num_body
+        Y(i,1) = body(i).qi;
+    end
+    for i = 1 : num_body
+        Y(i+num_body,1) = body(i).dqi;
+    end
+end
+        
+Yp = zeros(2*num_body,1);
+Yp_old = Yp;
+index = 1;
+intcount = 1;
+
+%% mbd
+while(t <= t_end)
     %% Y2qdq
     for i = 1 : num_body
         body(i).qi = Y(i,1);
@@ -11,7 +97,7 @@ function dynamics_analysis
     for i = 1 : num_body
          body(i).dqi = Y(i+num_body,1);
     end
-
+    
     %% Body 1~n
     for i = 1 : num_body
         %% Orientation Body
@@ -69,6 +155,13 @@ function dynamics_analysis
 
         body(i).Qih = [body(i).Fic + body(i).mi*body(i).drict*body(i).wi;
             body(i).Tic + body(i).rict*body(i).Fic + body(i).mi*body(i).rict*body(i).drict*body(i).wi - body(i).wit*body(i).Jic*body(i).wi];
+        
+        body(i).Qih_g = [body(i).Fic; body(i).rict*body(i).Fic];
+        body(i).Qih_c = [body(i).mi*body(i).drict*body(i).wi; body(i).mi*body(i).rict*body(i).drict*body(i).wi - body(i).wit*body(i).Jic*body(i).wi];
+        disp([i;1;body(i).mi*body(i).drict*body(i).wi]');
+        disp([i;2;body(i).mi*body(i).rict*body(i).drict*body(i).wi]');
+        disp([i;3;body(i).wit*body(i).Jic*body(i).wi]');
+        body(i).Qih_a = [zeros(3,1);body(i).Tic];
 
         %% Velocity Coupling Body
         body(i).drit = tilde(body(i).dri);
@@ -78,29 +171,21 @@ function dynamics_analysis
             body(i).dHi = body(i-1).wit*body(i).Hi;
         end
         body(i).Di = [body(i).drit*body(i).Hi + body(i).rit*body(i).dHi; body(i).dHi]*body(i).dqi;
-
-        %% Control
-        body(i).err_pos = body(i).des_pos - body(i).qi;
-        body(i).err_pos_accum = body(i).err_pos_accum + body(i).err_pos*h;
-        body(i).Tc_pos = body(i).Kp_pos*body(i).err_pos + body(i).Kd_pos*(body(i).err_pos - body(i).err_pos_prev)/h + body(i).Ki_pos*body(i).err_pos_accum;
-        body(i).err_pos_prev = body(i).err_pos;
-
-        body(i).err_vel = body(i).des_vel - body(i).dqi;
-        body(i).err_vel_accum = body(i).err_vel_accum + body(i).err_vel*h;
-        body(i).Tc_vel = body(i).Kp_vel*body(i).err_vel + body(i).Kd_vel*(body(i).err_vel - body(i).err_vel_prev)/h + body(i).Ki_vel*body(i).err_vel_accum;
-        body(i).err_vel_prev = body(i).err_vel;
-
-        body(i).T_control = body(i).Tc_pos + body(i).Tc_vel;
-        body(i).T_control = 0;
     end
     
     %% system EQM
     for i = num_body : -1 : 1
         body(i).Ki = body(i).Mih;
         body(i).Li = body(i).Qih;
+        body(i).Li_g = body(i).Qih_g;
+        body(i).Li_c = body(i).Qih_c;
+        body(i).Li_a = body(i).Qih_a;
         if i ~= num_body
             body(i).Ki = body(i).Ki + body(i+1).Ki;
             body(i).Li = body(i).Li + body(i+1).Li - body(i+1).Ki*body(i+1).Di;
+            body(i).Li_g = body(i).Li_g + body(i+1).Li_g - body(i+1).Ki*body(i+1).Di;
+            body(i).Li_c = body(i).Li_c + body(i+1).Li_c - body(i+1).Ki*body(i+1).Di;
+            body(i).Li_a = body(i).Li_a + body(i+1).Li_a - body(i+1).Ki*body(i+1).Di;
         end
     end
     
@@ -114,30 +199,20 @@ function dynamics_analysis
                 M(i, j) = body(i).Bi'*body(i).Ki*body(j).Bi;
             end
         end
-        
+    end
+    
+    for i = 1 : num_body
         D_temp = zeros(6,1);
         for j = 1 : i
             D_temp = D_temp + body(j).Di;
         end
-        % gravity compensation force
-        body(i).Fg = -[body(i).Fic;body(i).rict*body(i).Fic];
-        body(i).Tg = body(i).Bi'*(body(i).Fg - body(i).Ki*D_temp);
-        
-        body(i).T_in = body(i).T_control;
-        
-        body(i).Ta = body(i).Tg + body(i).T_in;
-%         body(i).Ta = 0;
-        
-        if t_current >= 2 && t_current <= 2.05
-            body(i).Td = -15;
-        else
-            body(i).Td = 0;
-        end
-        body(i).Td = 0;
-        
-        Q(i,1) = body(i).Bi'*(body(i).Li - body(i).Ki*D_temp) + body(i).Ta + body(i).Td;
-        
-        body(i).yp = body(i).Ta - body(1).Tg - body(i).r_hat ;
+
+        body(i).Tg = body(i).Bi'*(body(i).Li_g - body(i).Ki*D_temp);
+        body(i).Tc = body(i).Bi'*(body(i).Li_c - body(i).Ki*D_temp);
+        body(i).Ta = body(i).Bi'*(body(i).Li_a - body(i).Ki*D_temp);
+  
+        Q(i,1) = body(i).Tg + body(i).Tc + body(i).Ta;
+%         disp([body(i).Tg, body(i).Tc, body(i).Ta])
     end
 
     dYh = M\Q;
@@ -152,8 +227,37 @@ function dynamics_analysis
     for i = 1 : num_body
         Yp(i+num_body,1) = body(i).ddqi;
     end
-    for i = 1 : num_body
-        Yp(num_body*2 + i, 1) = body(i).yp;
-    end
-
+    
+    %% integration
+%     Y = Y + Yp_old*h + 0.5*h^2*(Yp - Yp_old);
+    [Y, t_next, intcount] = absh3(t, Y, Yp, h, intcount);
+        
+    data(index,1:3) = [t, body(1).qi, body(2).qi];
+%     disp(data(index,:));
+    
+    Yp_old = Yp;
+%     t = t + h;
+    t = t_next;
+    index = index + 1;
 end
+
+data2 = load(sprintf('body%d.txt',num_body));
+figure
+set(gcf,'Color',[1,1,1])
+subplot(2,1,1)
+plot(data(:,1), data(:,2),'LineWidth',2)
+hold on
+plot(data2(:,1), data2(:,2),'--','LineWidth',2)
+grid on
+xlabel('Time [s]')
+ylabel('Position [rad]')
+legend('MATLAB','ADAMS')
+
+subplot(2,1,2)
+plot(data(:,1), data(:,3),'LineWidth',2)
+hold on
+plot(data2(:,1), data2(:,5),'--','LineWidth',2)
+grid on
+xlabel('Time [s]')
+ylabel('Position [rad]')
+legend('MATLAB','ADAMS')
